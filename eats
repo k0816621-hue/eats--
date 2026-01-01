@@ -135,7 +135,6 @@ UIS.InputBegan:Connect(function(input, gameProcessed)
     if input.KeyCode == Keybind then
         MenuOpen = not MenuOpen
         if MenuOpen then
-            Main.Visible = true
             TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 600, 0, 400)}):Play()
         else
             TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 0, 0, 0)}):Play()
