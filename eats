@@ -176,8 +176,6 @@ if KeySystemEnabled then
             }):Play()
             
             Notify("Unlocked! 💗", "Welcome to Pink Hub 🌸", 6)-- Hide main GUI until unlocked
-    Main.Visible = false
-end
 
 local Main = Instance.new("Frame")
 Main.Size = UDim2.new(0, 600, 0, 400)
@@ -187,11 +185,7 @@ Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
 Main.Parent = ScreenGui
-
-if KeySystemEnabled and not Unlocked then
-    -- Main GUI hidden until key
-else
-    Main.Visible = true
+Main.Visible = false
 end
 
 local MainCorner = Instance.new("UICorner")
