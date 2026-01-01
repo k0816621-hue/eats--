@@ -220,6 +220,11 @@ local function CreateTab(name)
         ToggleFrame.Size = UDim2.new(1, -40, 0, 40)
         ToggleFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
         ToggleFrame.Parent = TabContent
+        ToggleFrame.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                ToggleBtn.MouseButton1Click:Fire()
+            end
+        end)
 
         local ToggleCorner = Instance.new("UICorner")
         ToggleCorner.CornerRadius = UDim.new(0, 8)
@@ -247,13 +252,19 @@ local function CreateTab(name)
         ToggleBtnCorner.CornerRadius = UDim.new(0, 12)
         ToggleBtnCorner.Parent = ToggleBtn
 
-        local state = default
+        local state = default or false
+        if default then
+            ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 255)
+        end
+
         ToggleBtn.MouseButton1Click:Connect(function()
             state = not state
             TweenService:Create(ToggleBtn, TweenInfo.new(0.2), {
                 BackgroundColor3 = state and Color3.fromRGB(255, 100, 255) or Color3.fromRGB(80, 80, 100)
             }):Play()
-            if callback then callback(state) end
+            if callback then 
+                task.spawn(callback, state)  -- Use task.spawn to prevent errors blocking
+            end
         end)
         return function() return state end  -- Return getter for state
     end
@@ -311,25 +322,26 @@ local function CreateTab(name)
         ValueLabel.Text = tostring(value)
 
         local dragging = false
+        
         SliderKnob.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
             end
         end)
 
-        UIS.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = false
-            end
-        end)
-
-        UIS.InputChanged:Connect(function(input)
-            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        SliderKnob.InputChanged:Connect(function(input)
+            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                 local relativeX = math.clamp((input.Position.X - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X, 0, 1)
                 value = math.floor(min + relativeX * (max - min))
                 SliderKnob.Position = UDim2.new(relativeX, -10, -7, 0)
                 ValueLabel.Text = tostring(value)
                 if callback then callback(value) end
+            end
+        end)
+
+        UIS.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = false
             end
         end)
 
@@ -661,17 +673,15 @@ end)
 
 -- NEW: Teleport List
 ScriptsTab:Section("Teleport")
-local playerList = GetPlayerList()
-local TeleportDropdown = ScriptsTab:Dropdown("Select Player", playerList, playerList[1] or "None")
 
-ScriptsTab:Button("Teleport", function()
-    local selected = TeleportDropdown.getSelected()
-    if selected then
-        TeleportTo(selected)
-    else
-        Notify("Error", "No player selected", 4)
+local playerList = GetPlayerList()
+local TeleportDropdown = ScriptsTab:Dropdown("Select Player", playerList, playerList[1] or "None", function(selectedName)
+    if selectedName and selectedName ~= "None" then
+        TeleportTo(selectedName)
     end
 end)
+
+-- Optional: Auto-refresh dropdown when players join/leave (already exists below, keep it)
 
 -- Refresh dropdown when players join/leave
 Players.PlayerAdded:Connect(function()
