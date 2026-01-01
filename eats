@@ -653,8 +653,12 @@ end)
 ScriptsTab:Slider("Size", 1, 20, 5, function(value)
     HitboxSize = value
     if HitboxEnabled then
-        DisableHitbox()
-        EnableHitbox()
+        -- Re-apply to all current players without full disable/enable
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= Players.LocalPlayer and player.Character then
+                ApplyHitbox(player.Character)
+            end
+        end
     end
 end)
 
