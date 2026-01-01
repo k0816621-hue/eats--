@@ -121,11 +121,11 @@ local function Notify(title, text, duration)
 end
 
 -- Keybind
-local Keybind = Enum.KeyCode.RightControl
+local Keybind = Enum.KeyCode.K
 local MenuOpen = true
 
 UIS.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
+    if gameProcessed or not Main or not Main.Parent then return end
     if input.KeyCode == Keybind then
         MenuOpen = not MenuOpen
         if MenuOpen then
@@ -133,7 +133,7 @@ UIS.InputBegan:Connect(function(input, gameProcessed)
             TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 600, 0, 400)}):Play()
         else
             TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 0, 0, 0)}):Play()
-            wait(0.3)
+            task.wait(0.35)
             Main.Visible = false
         end
     end
@@ -447,27 +447,27 @@ local Originals = {}
 
 local function ApplyHitbox(char)
     if not char then return end
-    local head = char:FindFirstChild("Head")
-    if head and head:IsA("BasePart") then
-        if not Originals[head] then
-            Originals[head] = {Size = head.Size, Shape = head.Shape, Transparency = head.Transparency, Orientation = head.Orientation}
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if hrp and hrp:IsA("BasePart") then
+        if not Originals[hrp] then
+            Originals[hrp] = {Size = hrp.Size, Transparency = hrp.Transparency, CanCollide = hrp.CanCollide}
         end
-        head.Size = Vector3.new(HitboxSize, HitboxSize, HitboxSize / 2)  -- Adjust for cylinder
-        head.Shape = Enum.PartType.Cylinder
-        head.Transparency = 0.5
-        head.Orientation = Vector3.new(0, 90, 0)  -- Horizontal cylinder, adjust if needed
+        hrp.Size = Vector3.new(HitboxSize * 2, HitboxSize * 2, HitboxSize * 2)
+        hrp.Transparency = 0.5
+        hrp.CanCollide = false
     end
 end
 
 local function RevertHitbox(char)
     if not char then return end
-    local head = char:FindFirstChild("Head")
-    if head and head:IsA("BasePart") and Originals[head] then
-        head.Size = Originals[head].Size
-        head.Shape = Originals[head].Shape
-        head.Transparency = Originals[head].Transparency
-        head.Orientation = Originals[head].Orientation
-        Originals[head] = nil
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if hrp and hrp:IsA("BasePart") and Originals[hrp] then
+        hrp.Size = Originals[hrp].Size
+        hrp.Shape = Originals[hrp].Shape
+        hrp.Transparency = Originals[hrp].Transparency
+        hrp.Orientation = Originals[hrp].Orientation
+        hrp.CanCollide = Originals[hrp].CanCollide
+        Originals[hrp] = nil
     end
 end
 
@@ -523,7 +523,7 @@ local ESPTags = {}
 local function CreateESP(player)
     if player == Players.LocalPlayer or not player.Character then return end
     local char = player.Character
-    local head = char:WaitForChild("Head", 5)
+    local head = char:FindFirstChild("Head") or char:WaitForChild("Head", 10)
     if not head then return end
 
     local bb = Instance.new("BillboardGui")
@@ -675,15 +675,16 @@ end)
 
 -- Refresh dropdown when players join/leave
 Players.PlayerAdded:Connect(function()
+    task.wait(1)  -- Give time for name to register
     playerList = GetPlayerList()
     TeleportDropdown.refresh()
 end)
 
-Players.PlayerRemoving:Connect(function()
+Players.PlayerRemoving:Connect(function(player)
+    task.wait(0.5)
     playerList = GetPlayerList()
     TeleportDropdown.refresh()
 end)
-
 -- Settings Tab
 SettingsTab:Section("Player Settings")
 SettingsTab:Toggle("Speed Hack", false, function(value)
@@ -705,7 +706,7 @@ end
 RunService.RenderStepped:Connect(function()
     for _, tab in pairs(Content:GetChildren()) do
         if tab:IsA("ScrollingFrame") then
-            tab.CanvasSize = UDim2.new(0, 0, 0, tab.UIListLayout.AbsoluteContentSize.Y + 20)
+            tab.CanvasSize = UDim2.new(0, 0, 0, tab.UIListLayout.AbsoluteContentSize.Y + 50)
         end
     end
 end)
