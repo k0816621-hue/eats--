@@ -175,7 +175,9 @@ if KeySystemEnabled then
                 Size = UDim2.new(0, 600, 0, 400)
             }):Play()
             
-            Notify("Unlocked! 💗", "Welcome to Pink Hub 🌸", 6)
+            Notify("Unlocked! 💗", "Welcome to Pink Hub 🌸", 6)-- Hide main GUI until unlocked
+    Main.Visible = false
+end
 
 local Main = Instance.new("Frame")
 Main.Size = UDim2.new(0, 600, 0, 400)
