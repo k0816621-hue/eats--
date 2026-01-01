@@ -132,7 +132,7 @@ NotifyText.Parent = NotifyFrame
 
 -- Keybind
 local Keybind = Enum.KeyCode.K
-local MenuOpen = true
+local MenuOpen = false
 
 UIS.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed or not Main or not Main.Parent then return end
@@ -780,190 +780,81 @@ end)
 Notify("Script Loaded 💗", "Enjoy 🌸", 6)
 
 print("Full Pink Hub loaded! 💕")
--- === PINK KEY SYSTEM (PLACE THIS AT THE VERY BOTTOM) === 💗🔑
--- === FINAL PINK KEY SYSTEM (PLACE AT VERY END) === 💗🔑
+-- PINK KEY SYSTEM 💗🔑 (FINAL WORKING VERSION)
 if KeySystemEnabled then
-    -- Make sure main stays hidden
     Main.Visible = false
     Main.Size = UDim2.new(0, 0, 0, 0)
 
-    local KeyGui = Instance.new("Frame")
-    KeyGui.Size = UDim2.new(1, 0, 1, 0)
-    KeyGui.BackgroundColor3 = Color3.fromRGB(15, 10, 30)
-    KeyGui.Parent = ScreenGui
+    local KeyScreen = Instance.new("ScreenGui")
+    KeyScreen.Parent = CoreGui
+    KeyScreen.Name = "PinkKey"
 
-    local KeyFrame = Instance.new("Frame")
-    KeyFrame.Size = UDim2.new(0, 400, 0, 300)
-    KeyFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    KeyFrame.BackgroundColor3 = Color3.fromRGB(40, 20, 70)
-    KeyFrame.Parent = KeyGui
+    local Bg = Instance.new("Frame")
+    Bg.Size = UDim2.new(1,0,1,0)
+    Bg.BackgroundColor3 = Color3.fromRGB(25,10,45)
+    Bg.Parent = KeyScreen
+
+    local Center = Instance.new("Frame")
+    Center.Size = UDim2.new(0,420,0,320)
+    Center.Position = UDim2.new(0.5,-210,0.5,-160)
+    Center.BackgroundColor3 = Color3.fromRGB(45,20,85)
+    Center.Parent = Bg
 
     local Corner = Instance.new("UICorner")
-    Corner.CornerRadius = UDim.new(0, 20)
-    Corner.Parent = KeyFrame
-
-    local Stroke = Instance.new("UIStroke")
-    Stroke.Color = Color3.fromRGB(255, 120, 255)
-    Stroke.Thickness = 5
-    Stroke.Transparency = 0.3
-    Stroke.Parent = KeyFrame
+    Corner.CornerRadius = UDim.new(0,20)
+    Corner.Parent = Center
 
     local Title = Instance.new("TextLabel")
-    Title.Size = UDim2.new(1, 0, 0, 80)
+    Title.Size = UDim2.new(1,0,0,100)
     Title.BackgroundTransparency = 1
     Title.Text = "Pink Hub 💗"
-    Title.TextColor3 = Color3.fromRGB(255, 150, 255)
+    Title.TextColor3 = Color3.fromRGB(255,140,255)
     Title.Font = Enum.Font.GothamBold
-    Title.TextSize = 40
-    Title.Parent = KeyFrame
+    Title.TextSize = 48
+    Title.Parent = Center
 
-    local Desc = Instance.new("TextLabel")
-    Desc.Size = UDim2.new(1, 0, 0, 40)
-    Desc.Position = UDim2.new(0, 0, 0, 80)
-    Desc.BackgroundTransparency = 1
-    Desc.Text = "Enter your key to continue"
-    Desc.TextColor3 = Color3.fromRGB(230, 200, 255)
-    Desc.Font = Enum.Font.Gotham
-    Desc.TextSize = 20
-    Desc.Parent = KeyFrame
+    local InputBox = Instance.new("TextBox")
+    InputBox.Size = UDim2.new(0.8,0,0,60)
+    InputBox.Position = UDim2.new(0.1,0,0.4,0)
+    InputBox.BackgroundColor3 = Color3.fromRGB(70,30,120)
+    InputBox.PlaceholderText = "Enter Key..."
+    InputBox.Text = ""
+    InputBox.TextColor3 = Color3.fromRGB(255,220,255)
+    InputBox.Font = Enum.Font.GothamBold
+    InputBox.TextSize = 28
+    InputBox.Parent = Center
 
-    local Input = Instance.new("TextBox")
-    Input.Size = UDim2.new(0.9, 0, 0, 50)
-    Input.Position = UDim2.new(0.05, 0, 0, 140)
-    Input.BackgroundColor3 = Color3.fromRGB(60, 30, 100)
-    Input.PlaceholderText = "Key here..."
-    Input.Text = ""
-    Input.TextColor3 = Color3.fromRGB(255, 220, 255)
-    Input.Font = Enum.Font.GothamSemibold
-    Input.TextSize = 22
-    Input.Parent = KeyFrame
+    local IC = Instance.new("UICorner")
+    IC.CornerRadius = UDim.new(0,15)
+    IC.Parent = InputBox
 
-    local InputCorner = Instance.new("UICorner")
-    InputCorner.CornerRadius = UDim.new(0, 12)
-    InputCorner.Parent = Input
+    local UnlockBtn = Instance.new("TextButton")
+    UnlockBtn.Size = UDim2.new(0.8,0,0,60)
+    UnlockBtn.Position = UDim2.new(0.1,0,0.7,0)
+    UnlockBtn.BackgroundColor3 = Color3.fromRGB(255,100,255)
+    UnlockBtn.Text = "Unlock 💖"
+    UnlockBtn.TextColor3 = Color3.new(1,1,1)
+    UnlockBtn.Font = Enum.Font.GothamBold
+    UnlockBtn.TextSize = 36
+    UnlockBtn.Parent = Center
 
-    local Button = Instance.new("TextButton")
-    Button.Size = UDim2.new(0.9, 0, 0, 55)
-    Button.Position = UDim2.new(0.05, 0, 0, 210)
-    Button.BackgroundColor3 = Color3.fromRGB(255, 80, 255)
-    Button.Text = "Unlock 💖"
-    Button.TextColor3 = Color3.new(1, 1, 1)
-    Button.Font = Enum.Font.GothamBold
-    Button.TextSize = 24
-    Button.Parent = KeyFrame
+    local BC = Instance.new("UICorner")
+    BC.CornerRadius = UDim.new(0,15)
+    BC.Parent = UnlockBtn
 
-    local BtnCorner = Instance.new("UICorner")
-    BtnCorner.CornerRadius = UDim.new(0, 12)
-    BtnCorner.Parent = Button
-
-    local function Shake()
-        for i = 1, 8 do
-            KeyFrame.Position = KeyFrame.Position + UDim2.new(0, math.random(-15,15), 0, math.random(-15,15))
-            task.wait(0.05)
-        end
-        KeyFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    end
-
-    Button.MouseButton1Click:Connect(function()
-        if Input.Text == HardcodedKey then
-            -- SUCCESS
-            TweenService:Create(KeyGui, TweenInfo.new(0.8), {BackgroundTransparency = 1}):Play()
-            TweenService:Create(KeyFrame, TweenInfo.new(0.8), {BackgroundTransparency = 1}):Play()
-            task.wait(0.9)
-            KeyGui:Destroy()
-
-            -- OPEN MAIN GUI
+    UnlockBtn.MouseButton1Click:Connect(function()
+        if InputBox.Text == HardcodedKey then
+            KeyScreen:Destroy()
             Main.Visible = true
-            TweenService:Create(Main, TweenInfo.new(0.8, Enum.EasingStyle.Back), {
-                Size = UDim2.new(0, 600, 0, 400)
-            }):Play()
-
-            print("✅ Unlocked! Welcome to Pink Hub 💗")
+            TweenService:Create(Main, TweenInfo.new(0.8, Enum.EasingStyle.Back), {Size = UDim2.new(0,600,0,400)}):Play()
+            print("Unlocked! Welcome 💗")
         else
-            -- FAIL
-            Shake()
-            Input.Text = ""
-            print("❌ Wrong key!")
+            InputBox.Text = ""
+            print("Wrong key!")
         end
     end)
 
-    Input.FocusLost:Connect(function(enter)
-        if enter then
-            Button.MouseButton1Click:Fire()
-        end
+    InputBox.FocusLost:Connect(function(enter)
+        if enter then UnlockBtn.MouseButton1Click:Fire() end
     end)
 end
--- SIMPLE PINK KEY SYSTEM (WORKS 100%)
-Main.Visible = false  -- Force hide no matter what
-Main.Size = UDim2.new(0, 0, 0, 0)
-
-local KeyScreen = Instance.new("ScreenGui")
-KeyScreen.Parent = game:GetService("CoreGui")  -- Safe for executors
-
-local Bg = Instance.new("Frame")
-Bg.Size = UDim2.new(1, 0, 1, 0)
-Bg.BackgroundColor3 = Color3.fromRGB(20, 10, 40)
-Bg.Parent = KeyScreen
-
-local Center = Instance.new("Frame")
-Center.Size = UDim2.new(0, 400, 0, 300)
-Center.Position = UDim2.new(0.5, -200, 0.5, -150)
-Center.BackgroundColor3 = Color3.fromRGB(50, 20, 90)
-Center.Parent = Bg
-
-local Corner = Instance.new("UICorner")
-Corner.CornerRadius = UDim.new(0, 20)
-Corner.Parent = Center
-
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 100)
-Title.BackgroundTransparency = 1
-Title.Text = "Pink Hub 💗"
-Title.TextColor3 = Color3.fromRGB(255, 150, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 50
-Title.Parent = Center
-
-local Input = Instance.new("TextBox")
-Input.Size = UDim2.new(0.8, 0, 0, 60)
-Input.Position = UDim2.new(0.1, 0, 0.4, 0)
-Input.BackgroundColor3 = Color3.fromRGB(80, 40, 120)
-Input.PlaceholderText = "Enter Key..."
-Input.TextColor3 = Color3.fromRGB(255, 220, 255)
-Input.Font = Enum.Font.GothamBold
-Input.TextSize = 30
-Input.Parent = Center
-
-local InputC = Instance.new("UICorner")
-InputC.CornerRadius = UDim.new(0, 15)
-InputC.Parent = Input
-
-local Btn = Instance.new("TextButton")
-Btn.Size = UDim2.new(0.8, 0, 0, 60)
-Btn.Position = UDim2.new(0.1, 0, 0.7, 0)
-Btn.BackgroundColor3 = Color3.fromRGB(255, 100, 255)
-Btn.Text = "Unlock 💖"
-Btn.TextColor3 = Color3.new(1,1,1)
-Btn.Font = Enum.Font.GothamBold
-Btn.TextSize = 35
-Btn.Parent = Center
-
-local BtnC = Instance.new("UICorner")
-BtnC.CornerRadius = UDim.new(0, 15)
-BtnC.Parent = Btn
-
-Btn.MouseButton1Click:Connect(function()
-    if Input.Text == HardcodedKey then
-        KeyScreen:Destroy()
-        Main.Visible = true
-        TweenService:Create(Main, TweenInfo.new(0.8), {Size = UDim2.new(0, 600, 0, 400)}):Play()
-        print("Unlocked! 💗")
-    else
-        Input.Text = ""
-        print("Wrong key!")
-    end
-end)
-
-Input.FocusLost:Connect(function(enter)
-    if enter then Btn.MouseButton1Click:Fire() end
-end)
