@@ -770,11 +770,6 @@ SettingsTab:Button("Destroy GUI", function()
     ScreenGui:Destroy()
 end)
 
--- Auto select first tab
-if #TabBar:GetChildren() > 3 then
-    TabBar:GetChildren()[4].MouseButton1Click:Fire()
-end
-
 -- Auto update canvas size
 RunService.RenderStepped:Connect(function()
     for _, tab in pairs(Content:GetChildren()) do
@@ -860,8 +855,3 @@ if KeySystemEnabled then
             print("Wrong key!")
         end
     end)
-
-    InputBox.FocusLost:Connect(function(enter)
-        if enter then UnlockBtn.MouseButton1Click:Fire() end
-    end)
-end
