@@ -13,17 +13,13 @@ local PastebinKeyURL = "https://pastebin.com/raw/YOURKEYPASTEBIN"  -- Put your P
 local HardcodedKey = "Nigga"  -- Fallback/secret key (change this!)
 local Unlocked = false  -- Tracks if key was enteredff
 
-if KeySystemEnabled and not Unlocked then
-    -- Main GUI hidden until key
-else
-    Main.Visible = true
-end
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PinkHub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = CoreGui
 -- Pink Key System 💗🔑
+
 if KeySystemEnabled then
     local KeyGui = Instance.new("Frame")
     KeyGui.Size = UDim2.new(1, 0, 1, 0)
@@ -133,6 +129,11 @@ if KeySystemEnabled then
 
     -- Copy key function
     CopyBtn.MouseButton1Click:Connect(function()
+    if KeySystemEnabled and not Unlocked then
+    -- Main GUI hidden until key
+else
+    Main.Visible = true
+end
 
 local Main = Instance.new("Frame")
 Main.Size = UDim2.new(0, 600, 0, 400)
