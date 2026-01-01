@@ -56,7 +56,7 @@ if KeySystemEnabled then
     local TitleKey = Instance.new("TextLabel")
     TitleKey.Size = UDim2.new(1, 0, 0, 60)
     TitleKey.BackgroundTransparency = 1
-    TitleKey.Text = "Unlock Pink Hub 💗"
+    TitleKey.Text = "Unlock 💗"
     TitleKey.TextColor3 = Color3.fromRGB(255, 140, 255)
     TitleKey.Font = Enum.Font.GothamBold
     TitleKey.TextSize = 32
@@ -128,11 +128,57 @@ if KeySystemEnabled then
     DiscordCorner.Parent = DiscordBtn
 
     -- Copy key function
-    CopyBtn.MouseButton1Click:Connect(function()
-    if KeySystemEnabled and not Unlocked then
-    -- Main GUI hidden until key
-else
-    Main.Visible = true
+    CopyBtn.MouseButton1Click:Connect(function()setclipboard(HardcodedKey)
+        Notify("Copied!", "Key copied to clipboard 💗", 3)  -- Reuse your Notify if exists, or print
+    end)
+
+    DiscordBtn.MouseButton1Click:Connect(function()
+        setclipboard("YOUR_DISCORD_INVITE")  -- Change to your Discord link
+        Notify("Copied!", "Discord invite copied 🌸", 3)
+    end)
+
+    -- Shake effect for invalid
+    local function Shake()
+        local tween = TweenService:Create(KeyFrame, TweenInfo.new(0.1), {Position = UDim2.new(0.5, -175 + math.random(-10,10), 0.5, -125 + math.random(-10,10))})
+        tween:Play()
+        tween.Completed:Connect(function() KeyFrame.Position = UDim2.new(0.5, -175, 0.5, -125) end)
+    end
+
+    -- Unlock function
+    local function CheckKey(inputKey)
+        spawn(function()
+            local success, validKey = pcall(function()
+                return game:HttpGet(PastebinKeyURL)
+            end)
+            if success and validKey:find(inputKey) then
+                return true
+            elseif inputKey == HardcodedKey then
+                return true
+            end
+            return false
+        end)
+        wait(1)  -- Simulate check
+        return inputKey == HardcodedKey  -- Fallback (remove if using only Pastebin)
+    end
+
+    UnlockBtn.MouseButton1Click:Connect(function()
+        local input = KeyInput.Text
+        if CheckKey(input) then
+            Unlocked = true
+            TweenService:Create(KeyGui, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
+            wait(0.5)
+            KeyGui:Destroy()
+            
+            -- Smoothly open main GUI
+            Main.Visible = true
+            TweenService:Create(Main, TweenInfo.new(0.6, Enum.EasingStyle.Quad), {
+                Size = UDim2.new(0, 600, 0, 400)
+            }):Play()
+            
+            Notify("Unlocked! 💗", "Welcome to Pink Hub 🌸", 6)
+
+    -- Hide main GUI until unlocked
+    Main.Visible = false
 end
 
 local Main = Instance.new("Frame")
@@ -143,6 +189,12 @@ Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
 Main.Parent = ScreenGui
+
+if KeySystemEnabled and not Unlocked then
+    -- Main GUI hidden until key
+else
+    Main.Visible = true
+end
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 12)
