@@ -38,10 +38,6 @@ Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
 Main.Parent = ScreenGui
--- FORCE HIDE MAIN GUI UNTIL KEY
-Main.Visible = false
-Main.Size = UDim2.new(0, 0, 0, 0)  -- Start closed
-Main.Position = UDim2.new(0.5, -300, 0.5, -200)  -- Keep centered
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 12)
