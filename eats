@@ -230,10 +230,17 @@ local function CreateTab(name)
         ToggleFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
         ToggleFrame.Parent = TabContent
         ToggleFrame.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                ToggleBtn.MouseButton1Click:Fire()
-            end
-        end)
+        ToggleFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        state = not state
+        TweenService:Create(ToggleBtn, TweenInfo.new(0.2), {
+            BackgroundColor3 = state and Color3.fromRGB(255, 100, 255) or Color3.fromRGB(80, 80, 100)
+        }):Play()
+        if callback then 
+            task.spawn(callback, state)
+        end
+    end
+end)
 
         local ToggleCorner = Instance.new("UICorner")
         ToggleCorner.CornerRadius = UDim.new(0, 8)
