@@ -472,14 +472,27 @@ end
 
 local function RevertHitbox(char)
     if not char then return end
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if hrp and hrp:IsA("BasePart") and Originals[hrp] then
-        hrp.Size = Originals[hrp].Size
-        hrp.Shape = Originals[hrp].Shape
-        hrp.Transparency = Originals[hrp].Transparency
-        hrp.Orientation = Originals[hrp].Orientation
-        hrp.CanCollide = Originals[hrp].CanCollide
-        Originals[hrp] = nil
+    local head = char:FindFirstChild("Head")  -- Change to HumanoidRootPart if you switched to HRP
+    if head and head:IsA("BasePart") then
+        local saved = Originals[head]
+        if saved then
+            pcall(function()
+                head.Size = saved.Size
+                head.Shape = saved.Shape
+                head.Transparency = saved.Transparency
+                head.Orientation = saved.Orientation or Vector3.new(0,0,0)
+                head.CanCollide = saved.CanCollide ~= false  -- Default to true if not saved
+            end)
+            Originals[head] = nil
+        else
+            -- Force default if no save found (prevents stuck big hitbox)
+            pcall(function()
+                head.Size = Vector3.new(2, 1, 1)
+                head.Shape = Enum.PartType.Block
+                head.Transparency = 0
+                head.CanCollide = true
+            end)
+        end
     end
 end
 
@@ -516,14 +529,34 @@ local function EnableHitbox()
 end
 
 local function DisableHitbox()
+    -- Revert ALL players, even if they respawned
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= Players.LocalPlayer and player.Character then
             RevertHitbox(player.Character)
         end
     end
-    for _, conn in pairs(Connections) do
-        conn:Disconnect()
+
+    -- Also clear any leftover stored originals
+    for part, _ in pairs(Originals) do
+        if part and part.Parent then
+            -- Force reset just in case
+            pcall(function()
+                part.Size = Vector3.new(2, 1, 1)  -- Default head size
+                part.Shape = Enum.PartType.Block
+                part.Transparency = 0
+                part.CanCollide = true
+            end)
+        end
     end
+
+    -- Disconnect all connections
+    for _, conn in pairs(Connections) do
+        if conn and conn.Connected then
+            conn:Disconnect()
+        end
+    end
+
+    -- Full cleanup
     Connections = {}
     Originals = {}
 end
@@ -643,13 +676,12 @@ ScriptsTab:Toggle("Enable", false, function(state)
     HitboxEnabled = state
     if state then
         EnableHitbox()
-        Notify("Hitbox Expanded!", "Cylinders activated on others 🌸", 4)
+        Notify("Hitbox Expanded!", "Activated on others 🌸", 4)
     else
-        DisableHitbox()
-        Notify("Hitbox Reverted", "Back to normal 👀", 4)
+        DisableHitbox()  -- Now uses the stronger version
+        Notify("Hitbox Disabled", "Everyone reverted to normal 👀", 4)
     end
 end)
-
 ScriptsTab:Slider("Size", 1, 20, 5, function(value)
     HitboxSize = value
     if HitboxEnabled then
