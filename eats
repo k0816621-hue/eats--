@@ -1,5 +1,5 @@
--- Custom Rayfield-Like Pink Hub 💗 (No external libs!)
--- Tabs, Sections, Buttons, Toggles, Sliders, Notifications
+-- Custom Rayfield-Like Pink Hub 💗 (With Open/Close Keybind!)
+-- Default keybind: RightControl (change below if you want)
 
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
@@ -43,9 +43,13 @@ Close.TextColor3 = Color3.fromRGB(255, 100, 100)
 Close.Font = Enum.Font.GothamBold
 Close.TextSize = 30
 Close.Parent = Main
-Close.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+Close.MouseButton1Click:Connect(function() 
+    TweenService:Create(Main, TweenInfo.new(0.3), {Size = UDim2.new(0,0,0,0)}):Play()
+    wait(0.3)
+    ScreenGui:Destroy()
+end)
 
--- Left Tab Bar
+-- Left Tab Bar (same as before)
 local TabBar = Instance.new("Frame")
 TabBar.Size = UDim2.new(0, 150, 1, -60)
 TabBar.Position = UDim2.new(0, 10, 0, 60)
@@ -70,7 +74,7 @@ Content.Parent = Main
 
 local CurrentTab = nil
 
--- Notification System
+-- Notification System (same as before)
 local NotifyFrame = Instance.new("Frame")
 NotifyFrame.Size = UDim2.new(0, 300, 0, 80)
 NotifyFrame.Position = UDim2.new(1, -320, 1, -100)
@@ -111,6 +115,27 @@ local function Notify(title, text, duration)
     wait(0.4)
     NotifyFrame.Visible = false
 end
+
+-- KEYBIND SECTION (Put this anywhere after the GUI is created)
+local Keybind = Enum.KeyCode.K  -- CHANGE THIS TO YOUR PREFERRED KEY!
+-- Examples: Enum.KeyCode.Insert, Enum.KeyCode.E, Enum.KeyCode.LeftAlt, etc.
+
+local MenuOpen = true  -- Starts open
+
+UIS.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Keybind then
+        MenuOpen = not MenuOpen
+        if MenuOpen then
+            Main.Visible = true
+            TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 600, 0, 400)}):Play()
+        else
+            TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+            wait(0.3)
+            Main.Visible = false
+        end
+    end
+end)
 
 -- Create Tab Function
 local function CreateTab(name)
@@ -239,7 +264,7 @@ local SettingsTab = CreateTab("Settings")
 
 -- Home Tab
 HomeTab:Section("Welcome 💕")
-HomeTab:Button("Infinite Yield", function()
+HomeTab:Button("discrod", function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
     Notify("Success!", "Infinite Yield loaded 💗", 5)
 end)
