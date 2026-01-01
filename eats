@@ -8,11 +8,131 @@ local UIS = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
+local KeySystemEnabled = false  -- Set to false to disable key system
+local PastebinKeyURL = "https://pastebin.com/raw/YOURKEYPASTEBIN"  -- Put your Pastebin raw link here
+local HardcodedKey = "Nigga"  -- Fallback/secret key (change this!)
+local Unlocked = false  -- Tracks if key was enteredff
+
+if KeySystemEnabled and not Unlocked then
+    -- Main GUI hidden until key
+else
+    Main.Visible = true
+end
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PinkHub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = CoreGui
+-- Pink Key System 💗🔑
+if KeySystemEnabled then
+    local KeyGui = Instance.new("Frame")
+    KeyGui.Size = UDim2.new(1, 0, 1, 0)
+    KeyGui.Position = UDim2.new(0, 0, 0, 0)
+    KeyGui.BackgroundColor3 = Color3.fromRGB(15, 10, 25)  -- Dark pinkish bg
+    KeyGui.BorderSizePixel = 0
+    KeyGui.Parent = ScreenGui
+
+    local KeyCorner = Instance.new("UICorner")
+    KeyCorner.CornerRadius = UDim.new(0, 0)  -- Full screen
+    KeyCorner.Parent = KeyGui
+
+    local Gradient = Instance.new("UIGradient")
+    Gradient.Color = Color3.fromRGB(255, 100, 255):TweenTo(Color3.fromRGB(150, 50, 200), "Sit", 1, true)
+    Gradient.Rotation = 45
+    Gradient.Parent = KeyGui
+
+    local KeyFrame = Instance.new("Frame")
+    KeyFrame.Size = UDim2.new(0, 350, 0, 250)
+    KeyFrame.Position = UDim2.new(0.5, -175, 0.5, -125)
+    KeyFrame.BackgroundColor3 = Color3.fromRGB(25, 15, 40)
+    KeyFrame.Parent = KeyGui
+
+    local FrameCorner = Instance.new("UICorner")
+    FrameCorner.CornerRadius = UDim.new(0, 16)
+    FrameCorner.Parent = KeyFrame
+
+    local Glow = Instance.new("UIStroke")
+    Glow.Color = Color3.fromRGB(255, 150, 255)
+    Glow.Thickness = 3
+    Glow.Transparency = 0.5
+    Glow.Parent = KeyFrame
+
+    local TitleKey = Instance.new("TextLabel")
+    TitleKey.Size = UDim2.new(1, 0, 0, 60)
+    TitleKey.BackgroundTransparency = 1
+    TitleKey.Text = "Unlock Pink Hub 💗"
+    TitleKey.TextColor3 = Color3.fromRGB(255, 140, 255)
+    TitleKey.Font = Enum.Font.GothamBold
+    TitleKey.TextSize = 32
+    TitleKey.Parent = KeyFrame
+
+    local KeyInput = Instance.new("TextBox")
+    KeyInput.Size = UDim2.new(1, -40, 0, 50)
+    KeyInput.Position = UDim2.new(0, 20, 0, 80)
+    KeyInput.BackgroundColor3 = Color3.fromRGB(40, 20, 60)
+    KeyInput.Text = ""
+    KeyInput.PlaceholderText = "Enter Key Here..."
+    KeyInput.TextColor3 = Color3.fromRGB(255, 200, 255)
+    KeyInput.Font = Enum.Font.Gotham
+    KeyInput.TextSize = 18
+    KeyInput.Parent = KeyFrame
+
+    local InputCorner = Instance.new("UICorner")
+    InputCorner.CornerRadius = UDim.new(0, 10)
+    InputCorner.Parent = KeyInput
+
+    local UnlockBtn = Instance.new("TextButton")
+    UnlockBtn.Size = UDim2.new(1, -40, 0, 45)
+    UnlockBtn.Position = UDim2.new(0, 20, 0, 150)
+    UnlockBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 255)
+    UnlockBtn.Text = "Unlock 💖"
+    UnlockBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    UnlockBtn.Font = Enum.Font.GothamBold
+    UnlockBtn.TextSize = 20
+    UnlockBtn.Parent = KeyFrame
+
+    local BtnCorner = Instance.new("UICorner")
+    BtnCorner.CornerRadius = UDim.new(0, 10)
+    BtnCorner.Parent = UnlockBtn
+
+    -- Hover effects
+    UnlockBtn.MouseEnter:Connect(function()
+        TweenService:Create(UnlockBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 150, 255)}):Play()
+    end)
+    UnlockBtn.MouseLeave:Connect(function()
+        TweenService:Create(UnlockBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 100, 255)}):Play()
+    end)
+
+    local CopyBtn = Instance.new("TextButton")
+    CopyBtn.Size = UDim2.new(0.48, -25, 0, 35)
+    CopyBtn.Position = UDim2.new(0, 20, 0, 210)
+    CopyBtn.BackgroundColor3 = Color3.fromRGB(80, 40, 120)
+    CopyBtn.Text = "Copy Key"
+    CopyBtn.TextColor3 = Color3.fromRGB(255, 200, 255)
+    CopyBtn.Font = Enum.Font.Gotham
+    CopyBtn.TextSize = 14
+    CopyBtn.Parent = KeyFrame
+
+    local CopyCorner = Instance.new("UICorner")
+    CopyCorner.CornerRadius = UDim.new(0, 8)
+    CopyCorner.Parent = CopyBtn
+
+    local DiscordBtn = Instance.new("TextButton")
+    DiscordBtn.Size = UDim2.new(0.48, -5, 0, 35)
+    DiscordBtn.Position = UDim2.new(0.52, 0, 0, 210)
+    DiscordBtn.BackgroundColor3 = Color3.fromRGB(80, 40, 120)
+    DiscordBtn.Text = "Discord"
+    DiscordBtn.TextColor3 = Color3.fromRGB(255, 200, 255)
+    DiscordBtn.Font = Enum.Font.Gotham
+    DiscordBtn.TextSize = 14
+    DiscordBtn.Parent = KeyFrame
+
+    local DiscordCorner = Instance.new("UICorner")
+    DiscordCorner.CornerRadius = UDim.new(0, 8)
+    DiscordCorner.Parent = DiscordBtn
+
+    -- Copy key function
+    CopyBtn.MouseButton1Click:Connect(function()
 
 local Main = Instance.new("Frame")
 Main.Size = UDim2.new(0, 600, 0, 400)
@@ -462,7 +582,6 @@ local function ApplyHitbox(char)
     local hrp = char:FindFirstChild("HumanoidRootPart")
     if hrp and hrp:IsA("BasePart") then
         if not Originals[hrp] then
-            Originals[hrp] = {Size = hrp.Size, Transparency = hrp.Transparency, CanCollide = hrp.CanCollide}
             Originals[hrp] = {
                 Size = hrp.Size,
                 Transparency = hrp.Transparency,
@@ -471,9 +590,6 @@ local function ApplyHitbox(char)
                 CanCollide = hrp.CanCollide
             }
         end
-        hrp.Size = Vector3.new(HitboxSize * 2, HitboxSize * 2, HitboxSize * 2)
-        hrp.Transparency = 0.5
-        hrp.CanCollide = false
 
         -- SLAY HITBOX SETTINGS 💖
         hrp.Size = Vector3.new(HitboxSize * 2, HitboxSize * 2, HitboxSize * 3)  -- Tall & wide for max reach
@@ -486,35 +602,21 @@ end
 
 local function RevertHitbox(char)
     if not char then return end
-    local head = char:FindFirstChild("Head")  -- Change to HumanoidRootPart if you switched to HRP
-    if head and head:IsA("BasePart") then
-        local saved = Originals[head]
     local hrp = char:FindFirstChild("HumanoidRootPart")
     if hrp and hrp:IsA("BasePart") then
         local saved = Originals[hrp]
         if saved then
             pcall(function()
-                head.Size = saved.Size
-                head.Shape = saved.Shape
-                head.Transparency = saved.Transparency
-                head.Orientation = saved.Orientation or Vector3.new(0,0,0)
-                head.CanCollide = saved.CanCollide ~= false  -- Default to true if not saved
                 hrp.Size = saved.Size
                 hrp.Transparency = saved.Transparency
                 hrp.Material = saved.Material
                 hrp.Color = saved.Color
                 hrp.CanCollide = saved.CanCollide ~= false
             end)
-            Originals[head] = nil
             Originals[hrp] = nil
         else
-            -- Force default if no save found (prevents stuck big hitbox)
             -- Force default if something went wrong
             pcall(function()
-                head.Size = Vector3.new(2, 1, 1)
-                head.Shape = Enum.PartType.Block
-                head.Transparency = 0
-                head.CanCollide = true
                 hrp.Size = Vector3.new(2, 2, 1)
                 hrp.Transparency = 1
                 hrp.Material = Enum.Material.Plastic
@@ -711,11 +813,9 @@ ScriptsTab:Toggle("Enable", false, function(state)
         Notify("Hitbox Disabled", "Everyone reverted to normal 👀", 4)
     end
 end)
-ScriptsTab:Slider("Size", 1, 20, 5, function(value)
 ScriptsTab:Slider("Size", 3, 30, 8, function(value)
     HitboxSize = value
     if HitboxEnabled then
-        -- Re-apply to all current players without full disable/enable
         for _, player in pairs(Players:GetPlayers()) do
             if player ~= Players.LocalPlayer and player.Character then
                 ApplyHitbox(player.Character)
