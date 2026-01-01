@@ -1,0 +1,154 @@
+Parent = TabBar
+
+    local TabButtonCorner = Instance.new("UICorner")
+    TabButtonCorner.CornerRadius = UDim.new(0, 8)
+    TabButtonCorner.Parent = TabButton
+
+    local TabContent = Instance.new("ScrollingFrame")
+    TabContent.Size = UDim2.new(1, 0, 1, 0)
+    TabContent.BackgroundTransparency = 1
+    TabContent.ScrollBarThickness = 4
+    TabContent.Visible = false
+    TabContent.Parent = Content
+
+    local Layout = Instance.new("UIListLayout")
+    Layout.Padding = UDim.new(0, 12)
+    Layout.Parent = TabContent
+    Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+    TabButton.MouseButton1Click:Connect(function()
+        if CurrentTab then CurrentTab.Visible = false end
+        CurrentTab = TabContent
+        TabContent.Visible = true
+        
+        -- Highlight selected tab
+        for _, btn in pairs(TabBar:GetChildren()) do
+            if btn:IsA("TextButton") then
+                btn.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
+            end
+        end
+        TabButton.BackgroundColor3 = Color3.fromRGB(80, 40, 100)
+    end)
+
+    local elements = {}
+
+    function elements:Section(title)
+        local SectionLabel = Instance.new("TextLabel")
+        SectionLabel.Size = UDim2.new(1, -40, 0, 30)
+        SectionLabel.BackgroundTransparency = 1
+        SectionLabel.Text = title
+        SectionLabel.TextColor3 = Color3.fromRGB(255, 160, 255)
+        SectionLabel.Font = Enum.Font.GothamBold
+        SectionLabel.TextSize = 20
+        SectionLabel.Parent = TabContent
+    end
+
+    function elements:Button(name, callback)
+        local Btn = Instance.new("TextButton")
+        Btn.Size = UDim2.new(1, -40, 0, 45)
+        Btn.BackgroundColor3 = Color3.fromRGB(45, 25, 70)
+        Btn.Text = name
+        Btn.TextColor3 = Color3.fromRGB(255, 200, 255)
+        Btn.Font = Enum.Font.GothamSemibold
+        Btn.TextSize = 16
+        Btn.Parent = TabContent
+
+        local BtnCorner = Instance.new("UICorner")
+        BtnCorner.CornerRadius = UDim.new(0, 8)
+        BtnCorner.Parent = Btn
+
+        Btn.MouseEnter:Connect(function() Btn.BackgroundColor3 = Color3.fromRGB(70, 40, 110) end)
+        Btn.MouseLeave:Connect(function() Btn.BackgroundColor3 = Color3.fromRGB(45, 25, 70) end)
+
+        Btn.MouseButton1Click:Connect(function()
+            if callback then callback() end
+        end)
+    end
+
+    function elements:Toggle(name, default, callback)
+        local ToggleFrame = Instance.new("Frame")
+        ToggleFrame.Size = UDim2.new(1, -40, 0, 40)
+        ToggleFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
+        ToggleFrame.Parent = TabContent
+
+        local ToggleCorner = Instance.new("UICorner")
+        ToggleCorner.CornerRadius = UDim.new(0, 8)
+        ToggleCorner.Parent = ToggleFrame
+
+        local ToggleLabel = Instance.new("TextLabel")
+        ToggleLabel.Size = UDim2.new(1, -60, 1, 0)
+        ToggleLabel.BackgroundTransparency = 1
+        ToggleLabel.Text = name
+        ToggleLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
+        ToggleLabel.Font = Enum.Font.Gotham
+        ToggleLabel.TextSize = 16
+        ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+        ToggleLabel.Position = UDim2.new(0, 15, 0, 0)
+        ToggleLabel.Parent = ToggleFrame
+
+        local ToggleBtn = Instance.new("TextButton")
+        ToggleBtn.Size = UDim2.new(0, 50, 0, 25)
+        ToggleBtn.Position = UDim2.new(1, -65, 0.5, -12.5)
+        ToggleBtn.BackgroundColor3 = default and Color3.fromRGB(255, 100, 255) or Color3.fromRGB(80, 80, 100)
+        ToggleBtn.Text = ""
+        ToggleBtn.Parent = ToggleFrame
+
+        local ToggleBtnCorner = Instance.new("UICorner")
+        ToggleBtnCorner.CornerRadius = UDim.new(0, 12)
+        ToggleBtnCorner.Parent = ToggleBtn
+
+        local state = default
+        ToggleBtn.MouseButton1Click:Connect(function()
+            state = not state
+            TweenService:Create(ToggleBtn, TweenInfo.new(0.2), {
+                BackgroundColor3 = state and Color3.fromRGB(255, 100, 255) or Color3.fromRGB(80, 80, 100)
+            }):Play()
+            if callback then callback(state) end
+        end)
+end
+
+    return elements
+end
+
+-- Create Tabs
+local HomeTab = CreateTab("Home")
+local ScriptsTab = CreateTab("Scripts")
+local SettingsTab = CreateTab("Settings")
+
+-- Home Tab
+HomeTab:Section("Welcome 💕")
+HomeTab:Button("Infinite Yield", function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    Notify("Success!", "Infinite Yield loaded 💗", 5)
+end)
+
+-- Scripts Tab
+ScriptsTab:Section("Popular Scripts")
+ScriptsTab:Button("Simple Fly", function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/2X0EXV5V"))()
+    Notify("Fly Activated!", "Have fun soaring 🌸", 4)
+end)
+
+ScriptsTab:Button("Player ESP", function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/qe4eK2vB"))()
+    Notify("ESP On", "Players highlighted 👀", 4)
+end)
+
+-- Settings Tab
+SettingsTab:Section("Player Settings")
+SettingsTab:Toggle("Speed Hack", false, function(value)
+    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value and 100 or 16
+    end
+end)
+
+SettingsTab:Button("Destroy GUI", function()
+    ScreenGui:Destroy()
+end)
+
+-- Auto select first tab
+TabBar:GetChildren()[4].MouseButton1Click:Fire()  -- First tab button
+
+Notify("Pink Hub Loaded 💗", "Custom Rayfield-style UI ready!", 6)
+
+print("Custom Pink Hub loaded! Enjoy 💕")
