@@ -893,3 +893,77 @@ if KeySystemEnabled then
         end
     end)
 end
+-- SIMPLE PINK KEY SYSTEM (WORKS 100%)
+Main.Visible = false  -- Force hide no matter what
+Main.Size = UDim2.new(0, 0, 0, 0)
+
+local KeyScreen = Instance.new("ScreenGui")
+KeyScreen.Parent = game:GetService("CoreGui")  -- Safe for executors
+
+local Bg = Instance.new("Frame")
+Bg.Size = UDim2.new(1, 0, 1, 0)
+Bg.BackgroundColor3 = Color3.fromRGB(20, 10, 40)
+Bg.Parent = KeyScreen
+
+local Center = Instance.new("Frame")
+Center.Size = UDim2.new(0, 400, 0, 300)
+Center.Position = UDim2.new(0.5, -200, 0.5, -150)
+Center.BackgroundColor3 = Color3.fromRGB(50, 20, 90)
+Center.Parent = Bg
+
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0, 20)
+Corner.Parent = Center
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 100)
+Title.BackgroundTransparency = 1
+Title.Text = "Pink Hub 💗"
+Title.TextColor3 = Color3.fromRGB(255, 150, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 50
+Title.Parent = Center
+
+local Input = Instance.new("TextBox")
+Input.Size = UDim2.new(0.8, 0, 0, 60)
+Input.Position = UDim2.new(0.1, 0, 0.4, 0)
+Input.BackgroundColor3 = Color3.fromRGB(80, 40, 120)
+Input.PlaceholderText = "Enter Key..."
+Input.TextColor3 = Color3.fromRGB(255, 220, 255)
+Input.Font = Enum.Font.GothamBold
+Input.TextSize = 30
+Input.Parent = Center
+
+local InputC = Instance.new("UICorner")
+InputC.CornerRadius = UDim.new(0, 15)
+InputC.Parent = Input
+
+local Btn = Instance.new("TextButton")
+Btn.Size = UDim2.new(0.8, 0, 0, 60)
+Btn.Position = UDim2.new(0.1, 0, 0.7, 0)
+Btn.BackgroundColor3 = Color3.fromRGB(255, 100, 255)
+Btn.Text = "Unlock 💖"
+Btn.TextColor3 = Color3.new(1,1,1)
+Btn.Font = Enum.Font.GothamBold
+Btn.TextSize = 35
+Btn.Parent = Center
+
+local BtnC = Instance.new("UICorner")
+BtnC.CornerRadius = UDim.new(0, 15)
+BtnC.Parent = Btn
+
+Btn.MouseButton1Click:Connect(function()
+    if Input.Text == HardcodedKey then
+        KeyScreen:Destroy()
+        Main.Visible = true
+        TweenService:Create(Main, TweenInfo.new(0.8), {Size = UDim2.new(0, 600, 0, 400)}):Play()
+        print("Unlocked! 💗")
+    else
+        Input.Text = ""
+        print("Wrong key!")
+    end
+end)
+
+Input.FocusLost:Connect(function(enter)
+    if enter then Btn.MouseButton1Click:Fire() end
+end)
